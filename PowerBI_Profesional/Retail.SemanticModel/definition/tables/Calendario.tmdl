@@ -1,0 +1,62 @@
+table Calendario
+	lineageTag: 285ceb1b-efdf-4cf4-9d32-665516743840
+	dataCategory: Time
+
+	column Fecha
+		dataType: dateTime
+		isKey
+		formatString: dd/MM/yyyy
+		lineageTag: bda8407b-6e09-4c1a-8c5a-83e4ff47150b
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Año
+		dataType: int64
+		lineageTag: 7ba02763-bb96-4263-abb3-8bad73ba18c7
+		summarizeBy: none
+		sourceColumn: Año
+
+	column Mes
+		dataType: string
+		lineageTag: 9fdc3fa0-8a50-4ee0-be6b-24292580ee6d
+		summarizeBy: none
+		sourceColumn: Mes
+
+	column MesNumero
+		dataType: int64
+		lineageTag: 798fe2a1-f8b7-487c-b234-09d69fb281bb
+		summarizeBy: none
+		sourceColumn: MesNumero
+
+	column DiaSemana
+		dataType: string
+		lineageTag: 2c67575e-97a9-4036-9b90-8a8437d67085
+		summarizeBy: none
+		sourceColumn: DiaSemana
+		sortByColumn: DiaSemanaNumero
+
+	column DiaSemanaNumero
+		dataType: int64
+		lineageTag: 18d6b3c1-39ca-40f1-bb83-0de137ba3a1b
+		summarizeBy: none
+		sourceColumn: DiaSemanaNumero
+
+	partition Calendario = m
+		mode: import
+		source =
+				let
+				    Fechas = List.RemoveNulls(Ventas[Fecha]),
+				    Inicio = Date.StartOfYear(List.Min(Fechas)),
+				    Fin = Date.EndOfYear(List.Max(Fechas)),
+				    Lista = List.Dates(Inicio, Duration.Days(Fin - Inicio) + 1, #duration(1,0,0,0)),
+				    Tabla = Table.FromList(Lista, Splitter.SplitByNothing(), {"Fecha"}),
+				    Tipos = Table.TransformColumnTypes(Tabla, {{"Fecha", type date}}),
+				    Anio = Table.AddColumn(Tipos, "Año", each Date.Year([Fecha]), Int64.Type),
+				    Mes = Table.AddColumn(Anio, "Mes", each Date.ToText([Fecha], "yyyy-MM"), type text),
+				    MesN = Table.AddColumn(Mes, "MesNumero", each Date.Month([Fecha]), Int64.Type),
+				    Dia = Table.AddColumn(MesN, "DiaSemana", each Date.DayOfWeekName([Fecha], "es-ES"), type text),
+				    DiaN = Table.AddColumn(Dia, "DiaSemanaNumero", each Date.DayOfWeek([Fecha], Day.Monday) + 1, Int64.Type)
+				in
+				    DiaN

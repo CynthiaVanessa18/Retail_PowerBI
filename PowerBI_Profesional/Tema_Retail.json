@@ -1,0 +1,87 @@
+{
+  "name": "Retail Referencia Rojo",
+  "dataColors": [
+    "#ED001C",
+    "#A51C30",
+    "#EF6676",
+    "#F5A4AE",
+    "#6C1A29",
+    "#C63D52",
+    "#D8B1B8"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#262626",
+  "tableAccent": "#ED001C",
+  "good": "#328F6D",
+  "neutral": "#D97732",
+  "bad": "#C35667",
+  "textClasses": {
+    "title": {
+      "fontFace": "Segoe UI",
+      "fontSize": 12,
+      "color": "#262626"
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 10,
+      "color": "#555555"
+    },
+    "callout": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 28,
+      "color": "#ED001C"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "transparency": 100
+          }
+        ],
+        "title": [
+          {
+            "fontColor": {
+              "solid": {
+                "color": "#202124"
+              }
+            },
+            "fontSize": 12,
+            "fontFamily": "Segoe UI"
+          }
+        ],
+        "border": [
+          {
+            "show": false,
+            "color": {
+              "solid": {
+                "color": "#E7DFE1"
+              }
+            },
+            "radius": 10
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#EFEFEF"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    }
+  }
+}

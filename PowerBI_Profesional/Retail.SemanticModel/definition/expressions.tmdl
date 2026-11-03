@@ -1,0 +1,4 @@
+expression RutaExcel = "C:\Ruta\Retail_PowerBI\data\Online Retail.xlsx" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 298c7d2a-2d85-43ab-afe3-07b2c8aa4e10
+
+	annotation PBI_ResultType = Text

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "customTheme": {
+      "name": "Retail_Referencia_Rojo11418885832049142.json",
+      "reportVersionAtImport": {
+        "visual": "2.14.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "Retail_Referencia_Rojo11418885832049142.json",
+          "path": "Retail_Referencia_Rojo11418885832049142.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "Fondo_Calidad.png",
+          "path": "Fondo_Calidad.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fondo_Cancelaciones.png",
+          "path": "Fondo_Cancelaciones.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fondo_Clientes.png",
+          "path": "Fondo_Clientes.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fondo_Geografia.png",
+          "path": "Fondo_Geografia.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fondo_Productos.png",
+          "path": "Fondo_Productos.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fondo_Resumen.png",
+          "path": "Fondo_Resumen.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fondo_Tendencias.png",
+          "path": "Fondo_Tendencias.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "defaultFilterActionIsDataFilter": true,
+    "useEnhancedTooltips": false
+  }
+}

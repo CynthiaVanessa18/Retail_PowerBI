@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+  "pageOrder": [
+    "Resumen",
+    "Tendencias",
+    "Productos",
+    "Clientes",
+    "Geografia",
+    "Cancelaciones",
+    "Calidad"
+  ],
+  "activePageName": "Resumen"
+}

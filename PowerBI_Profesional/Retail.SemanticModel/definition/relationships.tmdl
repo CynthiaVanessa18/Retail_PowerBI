@@ -1,0 +1,13 @@
+relationship 0792e676-be0b-4064-8488-fb0027ff0bba
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Ventas.InvoiceDate
+	toColumn: LocalDateTable_38f820fc-8d8f-4f82-b0a1-3ce582fb23f1.Date
+
+relationship da9f003d-17d2-4afb-985a-32705716bc2e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Ventas.Fecha
+	toColumn: LocalDateTable_127391dd-be01-485e-a16f-35d58e96d046.Date
+
+relationship ac8a5dc4-2910-4911-b2f3-939006cb5e2a
+	fromColumn: Ventas.Fecha
+	toColumn: Calendario.Fecha

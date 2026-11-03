@@ -1,0 +1,301 @@
+table Ventas
+	lineageTag: 16b5d246-a93c-4e21-bf64-54d2124cce2f
+
+	measure Ventas = CALCULATE(SUM(Ventas[Importe]), Ventas[VentaValida] = TRUE())
+		formatString: "£" #,0.00
+		lineageTag: 24170cec-7825-4e53-a48e-d5aac7343bc8
+
+	measure Pedidos = CALCULATE(DISTINCTCOUNT(Ventas[InvoiceNo]), Ventas[VentaValida] = TRUE())
+		formatString: #,0
+		lineageTag: e394aa31-8d48-4d67-a92e-fa8fa66c7108
+
+	measure Clientes = CALCULATE(DISTINCTCOUNT(Ventas[CustomerID]), Ventas[VentaValida] = TRUE(), Ventas[CustomerID] <> BLANK(), Ventas[CustomerID] <> "")
+		formatString: #,0
+		lineageTag: c37483dd-b2fc-4560-91d7-5d9cddb76489
+
+	measure Unidades = CALCULATE(SUM(Ventas[Quantity]), Ventas[VentaValida] = TRUE())
+		formatString: #,0
+		lineageTag: fe7abc84-2b07-4597-a039-fcdc46423730
+
+	measure 'Ticket promedio' = DIVIDE([Ventas], [Pedidos])
+		formatString: "£" #,0.00
+		lineageTag: d17fd34f-16db-4780-8060-4eae365f4132
+
+	measure 'Importe cancelaciones' = -CALCULATE(SUM(Ventas[Importe]), FILTER(Ventas, LEFT(UPPER(Ventas[InvoiceNo]), 1) = "C"))
+		formatString: "£" #,0.00
+		lineageTag: 7502d3e6-6000-4461-a3bd-46504fac65aa
+
+	measure 'Productos vendidos' = CALCULATE(DISTINCTCOUNT(Ventas[StockCode]), Ventas[VentaValida] = TRUE())
+		formatString: #,0
+		displayFolder: Comercial
+		lineageTag: d9e6a883-51bf-4bff-88d6-be39b37c34c9
+
+	measure 'Países activos' = CALCULATE(DISTINCTCOUNT(Ventas[Country]), Ventas[VentaValida] = TRUE())
+		formatString: #,0
+		displayFolder: Comercial
+		lineageTag: 66e873bd-bec3-466f-9cd2-e2ba1ef12489
+
+	measure 'Unidades por pedido' = DIVIDE([Unidades], [Pedidos])
+		formatString: 0.0
+		displayFolder: Comercial
+		lineageTag: be345e9d-6d49-4cb1-83a8-9c817325e0e0
+
+	measure 'Precio medio vendido' = DIVIDE([Ventas], [Unidades])
+		formatString: "£" #,0.00
+		displayFolder: Comercial
+		lineageTag: a4896289-da8e-49bd-845a-19559a05f404
+
+	measure 'Ventas mes anterior' = CALCULATE([Ventas], DATEADD(Calendario[Fecha], -1, MONTH))
+		formatString: "£" #,0.00
+		displayFolder: Tiempo
+		lineageTag: 10f394f1-5bff-43a7-818a-4116c6506430
+
+	measure 'Variación mensual %' = VAR Anterior = [Ventas mes anterior] RETURN IF(NOT ISBLANK(Anterior), DIVIDE([Ventas] - Anterior, Anterior))
+		formatString: 0.0%
+		displayFolder: Tiempo
+		lineageTag: 3945e185-9b02-4810-be8a-39a6788c9005
+
+	measure 'Ventas acumuladas año' = TOTALYTD([Ventas], Calendario[Fecha])
+		formatString: "£" #,0.00
+		displayFolder: Tiempo
+		lineageTag: 5fe7758a-9b08-4cad-8424-6504a81591c1
+
+	measure 'Ventas año anterior' = CALCULATE([Ventas], DATEADD(Calendario[Fecha], -1, YEAR))
+		formatString: "£" #,0.00
+		displayFolder: Tiempo
+		lineageTag: b55cfe5e-8b91-47db-8747-f45fdc588411
+
+	measure 'Variación anual %' = VAR Anterior = [Ventas año anterior] RETURN IF(NOT ISBLANK(Anterior), DIVIDE([Ventas] - Anterior, Anterior))
+		formatString: 0.0%
+		displayFolder: Tiempo
+		lineageTag: 297e1887-0ce5-4c29-9000-0d58cf169cd7
+
+	measure 'Ventas clientes identificados' = CALCULATE([Ventas], Ventas[CustomerID] <> BLANK(), Ventas[CustomerID] <> "")
+		formatString: "£" #,0.00
+		displayFolder: Clientes
+		lineageTag: 7c1fc927-85b5-4e8b-aa10-4135787c5e27
+
+	measure 'Pedidos clientes identificados' = CALCULATE([Pedidos], Ventas[CustomerID] <> BLANK(), Ventas[CustomerID] <> "")
+		formatString: #,0
+		displayFolder: Clientes
+		lineageTag: efc4a12b-9515-430d-a42b-543dd05fb5c4
+
+	measure 'Ventas por cliente' = DIVIDE([Ventas clientes identificados], [Clientes])
+		formatString: "£" #,0.00
+		displayFolder: Clientes
+		lineageTag: 9d94511c-fd6a-4132-8c85-3650c20aaae0
+
+	measure 'Pedidos por cliente' = DIVIDE([Pedidos clientes identificados], [Clientes])
+		formatString: 0.00
+		displayFolder: Clientes
+		lineageTag: 64a9553f-4080-4862-9f76-62714a8a05d3
+
+	measure 'Clientes recurrentes' = COUNTROWS(FILTER(FILTER(VALUES(Ventas[CustomerID]), NOT ISBLANK(Ventas[CustomerID]) && Ventas[CustomerID] <> ""), CALCULATE([Pedidos]) > 1))
+		formatString: #,0
+		displayFolder: Clientes
+		lineageTag: b0e183b4-c531-44d6-8621-6eb87be2de22
+
+	measure 'Clientes de un pedido' = COUNTROWS(FILTER(FILTER(VALUES(Ventas[CustomerID]), NOT ISBLANK(Ventas[CustomerID]) && Ventas[CustomerID] <> ""), CALCULATE([Pedidos]) = 1))
+		formatString: #,0
+		displayFolder: Clientes
+		lineageTag: b9f1be3d-6e50-41ee-812f-37c972ab5602
+
+	measure 'Recurrencia %' = DIVIDE([Clientes recurrentes], [Clientes])
+		formatString: 0.0%
+		displayFolder: Clientes
+		lineageTag: 44b9f84f-defb-4aec-b062-19945d77577e
+
+	measure 'Participación país %' = DIVIDE([Ventas], CALCULATE([Ventas], ALLSELECTED(Ventas[Country])))
+		formatString: 0.0%
+		displayFolder: Geografía
+		lineageTag: b3005c27-16dd-495a-80ed-ec2fe87a647b
+
+	measure 'Ranking país' = IF(NOT ISBLANK([Ventas]), RANKX(ALLSELECTED(Ventas[Country]), [Ventas], , DESC, DENSE))
+		formatString: #,0
+		displayFolder: Geografía
+		lineageTag: 12cad71d-dc48-44a2-99eb-c40c858200ee
+
+	measure 'Ranking producto' = IF(NOT ISBLANK([Ventas]), RANKX(ALLSELECTED(Ventas[StockCode], Ventas[Description]), [Ventas], , DESC, DENSE))
+		formatString: #,0
+		displayFolder: Productos
+		lineageTag: 9e310217-b024-4ef8-8d0c-cd2e8c6ef705
+
+	measure 'Facturas canceladas' = CALCULATE(DISTINCTCOUNT(Ventas[InvoiceNo]), FILTER(Ventas, LEFT(UPPER(Ventas[InvoiceNo]), 1) = "C"))
+		formatString: #,0
+		displayFolder: Cancelaciones
+		lineageTag: afe7a71b-fd56-4dcd-9a26-d7ffd1d37d48
+
+	measure 'Unidades canceladas' = -CALCULATE(SUM(Ventas[Quantity]), FILTER(Ventas, LEFT(UPPER(Ventas[InvoiceNo]), 1) = "C"))
+		formatString: #,0
+		displayFolder: Cancelaciones
+		lineageTag: 35de8534-43d3-4d5c-a763-c50d75f9f490
+
+	measure 'Cancelaciones sobre ventas %' = DIVIDE([Importe cancelaciones], [Ventas])
+		formatString: 0.0%
+		displayFolder: Cancelaciones
+		lineageTag: 97bcb190-e451-4dde-a1c1-0b08de35b614
+
+	measure 'Importe neto registrado' = SUM(Ventas[Importe])
+		formatString: "£" #,0.00
+		displayFolder: Cancelaciones
+		lineageTag: 6f640e27-c98e-4ac3-bc17-b4050b2d309f
+
+	measure 'Filas registradas' = COUNTROWS(Ventas)
+		formatString: #,0
+		displayFolder: Calidad
+		lineageTag: f3d85fda-7f55-415e-89a8-e59211bec330
+
+	measure 'Líneas de venta válidas' = CALCULATE(COUNTROWS(Ventas), Ventas[VentaValida] = TRUE())
+		formatString: #,0
+		displayFolder: Calidad
+		lineageTag: c84cb40a-61c7-4860-a451-f246b1461f83
+
+	measure 'Líneas excluidas' = [Filas registradas] - [Líneas de venta válidas]
+		formatString: #,0
+		displayFolder: Calidad
+		lineageTag: dfe2cabb-3687-4d78-b4e2-4efbc22cb24a
+
+	measure 'Filas sin cliente' = CALCULATE(COUNTROWS(Ventas), FILTER(Ventas, ISBLANK(Ventas[CustomerID]) || Ventas[CustomerID] = ""))
+		formatString: #,0
+		displayFolder: Calidad
+		lineageTag: b0712f8e-93df-4c82-82c3-e27dfd52b26d
+
+	measure 'Filas sin cliente %' = DIVIDE([Filas sin cliente], [Filas registradas])
+		formatString: 0.0%
+		displayFolder: Calidad
+		lineageTag: e6bb5d99-60e8-4088-a2e5-80ca84a73052
+
+	measure 'Ventas sin cliente' = CALCULATE([Ventas], FILTER(Ventas, ISBLANK(Ventas[CustomerID]) || Ventas[CustomerID] = ""))
+		formatString: "£" #,0.00
+		displayFolder: Calidad
+		lineageTag: a47e1b8b-2af6-4c7e-b175-5b1bac84ac5d
+
+	measure 'Filas precio no positivo' = CALCULATE(COUNTROWS(Ventas), Ventas[UnitPrice] <= 0)
+		formatString: #,0
+		displayFolder: Calidad
+		lineageTag: 87836c67-716f-44a9-8088-dc56ed8a9f5f
+
+	measure 'Filas cantidad negativa' = CALCULATE(COUNTROWS(Ventas), Ventas[Quantity] < 0)
+		formatString: #,0
+		displayFolder: Calidad
+		lineageTag: 7878bdc2-8d18-4b77-bcc7-6467f534e8c9
+
+	measure 'Primera fecha' = MIN(Ventas[Fecha])
+		formatString: dd/MM/yyyy
+		displayFolder: Calidad
+		lineageTag: 1e89f715-e3ec-42e6-9419-0bd258329445
+
+	measure 'Última fecha' = MAX(Ventas[Fecha])
+		formatString: dd/MM/yyyy
+		displayFolder: Calidad
+		lineageTag: 07883670-0e6a-4266-8a99-29adb819339c
+
+	column InvoiceNo
+		dataType: string
+		lineageTag: 658bd420-0014-4598-b3d9-a1c42bd8a468
+		summarizeBy: none
+		sourceColumn: InvoiceNo
+
+	column StockCode
+		dataType: string
+		lineageTag: 6d2a3e08-38a1-4c3d-80f9-6877b68295ec
+		summarizeBy: none
+		sourceColumn: StockCode
+
+	column Description
+		dataType: string
+		lineageTag: e3cf6554-6e35-46e5-b80d-19ba79bc6b21
+		summarizeBy: none
+		sourceColumn: Description
+
+	column Quantity
+		dataType: int64
+		lineageTag: b0986f05-575a-456b-b158-f9f8de844e5e
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column InvoiceDate
+		dataType: dateTime
+		lineageTag: b418da28-07d0-4a06-bc5a-efe04cffcb1a
+		summarizeBy: none
+		sourceColumn: InvoiceDate
+
+		variation Variación
+			isDefault
+			relationship: 0792e676-be0b-4064-8488-fb0027ff0bba
+			defaultHierarchy: LocalDateTable_38f820fc-8d8f-4f82-b0a1-3ce582fb23f1.'Date Hierarchy'
+
+	column UnitPrice
+		dataType: double
+		formatString: #,0.00
+		lineageTag: f35afef1-3860-461a-a877-ead3ba77ff07
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: string
+		lineageTag: 4420df6c-491c-4847-8db4-26e8cda3572e
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+	column Country
+		dataType: string
+		lineageTag: 2a83b084-746b-4bb3-97e6-06d2115bca03
+		summarizeBy: none
+		sourceColumn: Country
+
+	column Fecha
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: f3eda69d-79b9-4f3d-970f-714c3d4b2458
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		variation Variación
+			isDefault
+			relationship: da9f003d-17d2-4afb-985a-32705716bc2e
+			defaultHierarchy: LocalDateTable_127391dd-be01-485e-a16f-35d58e96d046.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Mes
+		dataType: string
+		lineageTag: 42b5adad-9c7a-4c38-8538-5f6d1b8943d0
+		summarizeBy: none
+		sourceColumn: Mes
+
+	column Importe
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 696fb4c8-ef3d-4bac-afae-7ac885ec013c
+		summarizeBy: sum
+		sourceColumn: Importe
+
+		annotation SummarizationSetBy = Automatic
+
+	column VentaValida
+		dataType: boolean
+		lineageTag: f48e6dda-800c-43a3-bc14-c782ffa6162a
+		summarizeBy: none
+		sourceColumn: VentaValida
+
+	partition Ventas = m
+		mode: import
+		source =
+				let
+				    Fuente = Excel.Workbook(File.Contents(RutaExcel), null, true),
+				    Hoja = Fuente{[Item="Online Retail", Kind="Sheet"]}[Data],
+				    Encabezados = Table.PromoteHeaders(Hoja, [PromoteAllScalars=true]),
+				    Tipos = Table.TransformColumnTypes(Encabezados, {{"InvoiceNo", type text}, {"StockCode", type text}, {"Description", type text}, {"Quantity", Int64.Type}, {"InvoiceDate", type datetime}, {"UnitPrice", type number}, {"CustomerID", type text}, {"Country", type text}}, "en-GB"),
+				    Fecha = Table.AddColumn(Tipos, "Fecha", each Date.From([InvoiceDate]), type date),
+				    Mes = Table.AddColumn(Fecha, "Mes", each Date.ToText([Fecha], "yyyy-MM"), type text),
+				    Importe = Table.AddColumn(Mes, "Importe", each [Quantity] * [UnitPrice], type number),
+				    Valida = Table.AddColumn(Importe, "VentaValida", each [Quantity] > 0 and [UnitPrice] > 0 and not Text.StartsWith(Text.Upper([InvoiceNo]), "C"), type logical)
+				in
+				    Valida
+
+	annotation PBI_ResultType = Table

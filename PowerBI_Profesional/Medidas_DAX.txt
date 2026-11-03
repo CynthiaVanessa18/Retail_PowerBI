@@ -1,0 +1,116 @@
+Ventas =
+CALCULATE(SUM(Ventas[Importe]), Ventas[VentaValida] = TRUE())
+
+Pedidos =
+CALCULATE(DISTINCTCOUNT(Ventas[InvoiceNo]), Ventas[VentaValida] = TRUE())
+
+Clientes =
+CALCULATE(DISTINCTCOUNT(Ventas[CustomerID]), Ventas[VentaValida] = TRUE(), Ventas[CustomerID] <> BLANK(), Ventas[CustomerID] <> "")
+
+Unidades =
+CALCULATE(SUM(Ventas[Quantity]), Ventas[VentaValida] = TRUE())
+
+Ticket promedio =
+DIVIDE([Ventas], [Pedidos])
+
+Importe cancelaciones =
+-CALCULATE(SUM(Ventas[Importe]), FILTER(Ventas, LEFT(UPPER(Ventas[InvoiceNo]), 1) = "C"))
+
+Productos vendidos =
+CALCULATE(DISTINCTCOUNT(Ventas[StockCode]), Ventas[VentaValida] = TRUE())
+
+Países activos =
+CALCULATE(DISTINCTCOUNT(Ventas[Country]), Ventas[VentaValida] = TRUE())
+
+Unidades por pedido =
+DIVIDE([Unidades], [Pedidos])
+
+Precio medio vendido =
+DIVIDE([Ventas], [Unidades])
+
+Ventas mes anterior =
+CALCULATE([Ventas], DATEADD(Calendario[Fecha], -1, MONTH))
+
+Variación mensual % =
+VAR Anterior = [Ventas mes anterior] RETURN IF(NOT ISBLANK(Anterior), DIVIDE([Ventas] - Anterior, Anterior))
+
+Ventas acumuladas año =
+TOTALYTD([Ventas], Calendario[Fecha])
+
+Ventas año anterior =
+CALCULATE([Ventas], DATEADD(Calendario[Fecha], -1, YEAR))
+
+Variación anual % =
+VAR Anterior = [Ventas año anterior] RETURN IF(NOT ISBLANK(Anterior), DIVIDE([Ventas] - Anterior, Anterior))
+
+Ventas clientes identificados =
+CALCULATE([Ventas], Ventas[CustomerID] <> BLANK(), Ventas[CustomerID] <> "")
+
+Pedidos clientes identificados =
+CALCULATE([Pedidos], Ventas[CustomerID] <> BLANK(), Ventas[CustomerID] <> "")
+
+Ventas por cliente =
+DIVIDE([Ventas clientes identificados], [Clientes])
+
+Pedidos por cliente =
+DIVIDE([Pedidos clientes identificados], [Clientes])
+
+Clientes recurrentes =
+COUNTROWS(FILTER(FILTER(VALUES(Ventas[CustomerID]), NOT ISBLANK(Ventas[CustomerID]) && Ventas[CustomerID] <> ""), CALCULATE([Pedidos]) > 1))
+
+Clientes de un pedido =
+COUNTROWS(FILTER(FILTER(VALUES(Ventas[CustomerID]), NOT ISBLANK(Ventas[CustomerID]) && Ventas[CustomerID] <> ""), CALCULATE([Pedidos]) = 1))
+
+Recurrencia % =
+DIVIDE([Clientes recurrentes], [Clientes])
+
+Participación país % =
+DIVIDE([Ventas], CALCULATE([Ventas], ALLSELECTED(Ventas[Country])))
+
+Ranking país =
+IF(NOT ISBLANK([Ventas]), RANKX(ALLSELECTED(Ventas[Country]), [Ventas], , DESC, DENSE))
+
+Ranking producto =
+IF(NOT ISBLANK([Ventas]), RANKX(ALLSELECTED(Ventas[StockCode], Ventas[Description]), [Ventas], , DESC, DENSE))
+
+Facturas canceladas =
+CALCULATE(DISTINCTCOUNT(Ventas[InvoiceNo]), FILTER(Ventas, LEFT(UPPER(Ventas[InvoiceNo]), 1) = "C"))
+
+Unidades canceladas =
+-CALCULATE(SUM(Ventas[Quantity]), FILTER(Ventas, LEFT(UPPER(Ventas[InvoiceNo]), 1) = "C"))
+
+Cancelaciones sobre ventas % =
+DIVIDE([Importe cancelaciones], [Ventas])
+
+Importe neto registrado =
+SUM(Ventas[Importe])
+
+Filas registradas =
+COUNTROWS(Ventas)
+
+Líneas de venta válidas =
+CALCULATE(COUNTROWS(Ventas), Ventas[VentaValida] = TRUE())
+
+Líneas excluidas =
+[Filas registradas] - [Líneas de venta válidas]
+
+Filas sin cliente =
+CALCULATE(COUNTROWS(Ventas), FILTER(Ventas, ISBLANK(Ventas[CustomerID]) || Ventas[CustomerID] = ""))
+
+Filas sin cliente % =
+DIVIDE([Filas sin cliente], [Filas registradas])
+
+Ventas sin cliente =
+CALCULATE([Ventas], FILTER(Ventas, ISBLANK(Ventas[CustomerID]) || Ventas[CustomerID] = ""))
+
+Filas precio no positivo =
+CALCULATE(COUNTROWS(Ventas), Ventas[UnitPrice] <= 0)
+
+Filas cantidad negativa =
+CALCULATE(COUNTROWS(Ventas), Ventas[Quantity] < 0)
+
+Primera fecha =
+MIN(Ventas[Fecha])
+
+Última fecha =
+MAX(Ventas[Fecha])

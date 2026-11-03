@@ -1,0 +1,22 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-CR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["RutaExcel","Ventas","Calendario"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Ventas
+ref table DateTableTemplate_5311f2c2-8607-49b5-9d70-2789fc1ad9d3
+ref table LocalDateTable_38f820fc-8d8f-4f82-b0a1-3ce582fb23f1
+ref table LocalDateTable_127391dd-be01-485e-a16f-35d58e96d046
+ref table Calendario
+
+
+ref expression RutaExcel
