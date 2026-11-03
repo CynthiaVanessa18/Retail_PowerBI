@@ -6,6 +6,8 @@ Diseño panorámico con barra lateral negra, tarjetas con iconos y cifras rojas,
 
 ![Vista general del dashboard de Online Retail](docs/screenshots/01-resumen-ejecutivo.png)
 
+**Ver con más detalle:** [abrir el informe completo en PDF](docs/Retail.pdf) · [abrir la portada en alta resolución](docs/screenshots/01-resumen-ejecutivo.png).
+
 ## El proyecto en cifras
 
 Resultados generales del informe, sin filtros de periodo ni país:
@@ -25,7 +27,7 @@ Todas las cifras monetarias están expresadas en **libras esterlinas (GBP)**.
 
 ## Recorrido por las siete pantallas
 
-Las imágenes son capturas del informe funcionando en Power BI Desktop con los datos cargados. Haz clic en cada una para verla a tamaño completo.
+Las siete imágenes se generaron directamente desde el PDF exportado por Power BI, a **4.000 × 2.250 píxeles** cada una. Haz clic en una imagen para abrirla a tamaño completo y ampliar los textos y las tablas. También puedes [abrir o descargar el PDF de las siete páginas](docs/Retail.pdf).
 
 ### 01 · Resumen ejecutivo
 
@@ -99,6 +101,7 @@ Mantén las carpetas `Retail.Report` y `Retail.SemanticModel` junto a `Retail.pb
 | [`PowerBI_Profesional/Tema_Retail.json`](PowerBI_Profesional/Tema_Retail.json) | Paleta y estilos del tema |
 | [`data/Online Retail.xlsx`](data/Online%20Retail.xlsx) | Datos originales |
 | [`docs/screenshots`](docs/screenshots) | Capturas de las siete páginas |
+| [`docs/Retail.pdf`](docs/Retail.pdf) | Exportación completa para consultar y ampliar |
 
 ## Criterios de interpretación
 
